@@ -3,17 +3,19 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
+import os
+from dotenv import load_dotenv
 
 from app.crud import authenticate_user, create_access_token, get_user, create_user, get_users, verify_token
 from app.db.db_setup import get_db
 from app.schemas import UserCreate,User
+load_dotenv() 
 
 
 
-SECRET_KEY = "your_secret_key"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 300
+my_secret_key = os.getenv('SECRET_KEY')
+my_algorithm = os.getenv('ALGORITHM')
+token_expire = 300
 
 router= fastapi.APIRouter()
 
@@ -44,7 +46,7 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(minutes=token_expire)
     access_token = create_access_token(
         data={"sub": str(user.id), "role": user.role}, expires_delta=access_token_expires
     )

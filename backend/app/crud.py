@@ -5,6 +5,8 @@ from sqlalchemy.sql import select, join
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordBearer
+import os
+from dotenv import load_dotenv
 
 from app.db.models.user import User
 from app.db.models.course import Course
@@ -12,12 +14,17 @@ from app.db.models.grade import Grade
 from app.schemas import UserCreate, CourseCreate, GradeCreate
 from app.db.db_setup import get_db
 
+load_dotenv() 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-SECRET_KEY = "your_secret_key"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 300
+# SECRET_KEY = "your_secret_key"
+# ALGORITHM = "HS256"
+# ACCESS_TOKEN_EXPIRE_MINUTES = 300
 
+
+my_secret_key = os.getenv('SECRET_KEY')
+my_algorithm = os.getenv('ALGORITHM')
+token_expire = os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES')
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 def create_user(db: Session, user: UserCreate):
@@ -61,12 +68,12 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, my_secret_key, algorithm=my_algorithm)
     return encoded_jwt
 
 def verify_token(token: str = Depends(oauth2_scheme)):
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, my_secret_key, algorithms=[my_algorithm])
         username: str = payload.get("sub")
         if username is None:
             raise HTTPException(status_code=403, detail="Token is invalid or expired")
@@ -81,7 +88,7 @@ def get_user_id_from_token(token: str = Depends(oauth2_scheme), db: Session = De
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, my_secret_key, algorithms=[my_algorithm])
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
