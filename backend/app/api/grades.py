@@ -5,8 +5,9 @@ from sqlalchemy.orm import Session
 
 from app.crud import finalize_grade, get_all_courses_with_grades_and_students, get_grades, get_student_courses, get_teacher_courses_with_students, update_grade
 from app.db.db_setup import get_db
-from app.schemas import CourseWithGradesAndStudents, CourseWithStudents, Grade,GradeCreate, GradeUpdate, GradeWithCourse
+from app.schemas import Course, CourseWithGradesAndStudents, CourseWithStudents, Grade,GradeCreate, GradeUpdate, GradeWithCourse, User
 from app.dependencies import get_current_user_id
+from app.email_service import send_email
 
 router= fastapi.APIRouter()
 
@@ -60,6 +61,13 @@ def update_student_grade(grade_id: int, grade: GradeUpdate, db: Session = Depend
     updated_grade = update_grade(db, grade_id=grade_id, grade=grade.grade)
     if not updated_grade:
         raise HTTPException(status_code=404, detail="Grade not found")
+    
+    # Fetch the student and course details to send the email
+    student = db.query(User).filter(User.id == grade.student_id).first()
+    course = db.query(Course).filter(Course.id == grade.course_id).first()
+
+    if student and course:
+        send_email(student.email, course.name, grade.grade)
     return updated_grade
 
 
