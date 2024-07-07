@@ -1,5 +1,3 @@
-uvicorn main:app --reload
-
 # Backend - Student Grades Portal
 
 This is the backend service for the Student Grades Portal application. It is built with FastAPI and uses PostgreSQL as its database.
