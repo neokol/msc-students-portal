@@ -1,0 +1,58 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: neokol
+      POSTGRES_PASSWORD: 81829192
+      POSTGRES_DB: AcademicPortal
+    ports:
+      - "5432:5432"
+    networks:
+      - students-grades-portal_default
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - students-grades-portal_default
+
+  backend:
+    build:
+      context: ./backend
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://neokol:81829192@db:5432/AcademicPortal
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    networks:
+      - students-grades-portal_default
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    networks:
+      - students-grades-portal_default
+
+volumes:
+  postgres_data:
+
+networks:
+  students-grades-portal_default:
+    driver: bridge
