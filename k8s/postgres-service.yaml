@@ -4,7 +4,7 @@ metadata:
   name: postgres
   namespace: students-grades-portal
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
   - port: 5432
   selector:

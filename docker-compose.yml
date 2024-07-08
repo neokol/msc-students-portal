@@ -32,7 +32,7 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgres://neokol:81829192@db:5432/AcademicPortal
+      DATABASE_URL: postgres://neokol:81829192@postgres:5432/AcademicPortal
     ports:
       - "8000:8000"
     volumes:

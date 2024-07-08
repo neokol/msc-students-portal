@@ -4,9 +4,10 @@ metadata:
   name: pgadmin
   namespace: students-grades-portal
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
   - port: 80
     targetPort: 80
+    nodePort: 30080
   selector:
     app: pgadmin

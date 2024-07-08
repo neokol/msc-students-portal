@@ -4,11 +4,15 @@ metadata:
   name: mailhog
   namespace: students-grades-portal
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
-  - port: 1025
+  - name: smtp
+    port: 1025
     targetPort: 1025
-  - port: 8025
+    nodePort: 30025  # NodePort for SMTP
+  - name: web-ui
+    port: 8025
     targetPort: 8025
+    nodePort: 30085  # Choose a different NodePort for web UI
   selector:
     app: mailhog
