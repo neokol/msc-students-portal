@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: students-grades-portal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: backend:latest
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://neokol:81829192@postgres:5432/AcademicPortal"
+        ports:
+        - containerPort: 8000
