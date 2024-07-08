@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: backend:latest
+        image: docker.pkg.github.com/neokol/msc-students-portal/backend:latest
         env:
         - name: DATABASE_URL
           value: "postgresql://neokol:81829192@postgres:5432/AcademicPortal"
