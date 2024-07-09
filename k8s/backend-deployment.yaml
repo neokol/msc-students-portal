@@ -27,5 +27,6 @@ spec:
           value: "your_secret_key"
         ports:
         - containerPort: 8000
+        imagePullPolicy: Always
       imagePullSecrets:
       - name: github-packages

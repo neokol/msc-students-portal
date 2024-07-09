@@ -18,3 +18,4 @@ spec:
         image: ghcr.io/neokol/msc-students-portal/frontend:latest
         ports:
         - containerPort: 3000
+        imagePullPolicy: Always

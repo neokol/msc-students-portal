@@ -4,8 +4,10 @@ metadata:
   name: frontend
   namespace: students-grades-portal
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
-  - port: 3000
+  - port: 80
+    targetPort: 3000
+    nodePort: 30001  # Choose an available port in the range 30000-32767
   selector:
     app: frontend
